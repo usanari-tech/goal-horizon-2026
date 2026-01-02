@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Horizon 2026 | 進捗を、快感に。</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Outfit:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <!-- GSAP for Rich Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <!-- Canvas Confetti for Achievements -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Background Elements -->
+        <div class="bg-glow"></div>
+        <div class="fluid-bg" id="fluid-bg"></div>
+
+        <nav class="glass-nav">
+            <div class="logo">Goal Horizon <span>2026</span></div>
+            <div class="nav-links">
+                <button id="add-goal-btn" class="btn-primary">新しい目標を追加</button>
+            </div>
+        </nav>
+
+        <main>
+            <!-- Vision Hero Section -->
+            <section id="hero" class="hero-section">
+                <div class="hero-content">
+                    <h2 id="dynamic-greeting">2026年の挑戦を始めましょう</h2>
+                    <p class="subtitle">目標をセットして、最高の1年に。</p>
+                </div>
+            </section>
+
+            <!-- Goals Dashboard -->
+            <section id="dashboard" class="dashboard-section">
+                <div class="section-header">
+                    <h3>Your Goals</h3>
+                    <div class="energy-meter-container">
+                        <span class="label">Total Energy</span>
+                        <div class="energy-bar">
+                            <div id="total-progress" class="energy-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="goals-container" class="goals-grid">
+                    <!-- Goals will be injected here -->
+                    <div class="empty-state">
+                        <p>まだ目標がありません。＋ボタンから追加してください。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modals -->
+        <div id="modal-overlay" class="modal-overlay">
+            <div class="modal-content glass">
+                <button class="close-modal">&times;</button>
+                <h3>新規目標の設定</h3>
+                <form id="goal-form">
+                    <div class="input-group focus-animation">
+                        <label for="goal-title">目標の名前</label>
+                        <input type="text" id="goal-title" placeholder="例: AI開発を極める" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="goal-category">カテゴリー</label>
+                        <select id="goal-category">
+                            <option value="skill">スキル・学習</option>
+                            <option value="health">健康・習慣</option>
+                            <option value="wealth">資産・キャリア</option>
+                            <option value="leisure">趣味・余暇</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">起動する</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
