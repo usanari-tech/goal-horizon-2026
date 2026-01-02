@@ -176,7 +176,7 @@ const renderGoals = () => {
 
     Object.entries(grouped).forEach(([category, categoryGoals]) => {
         const stackElement = document.createElement('div');
-        stackElement.className = `category-stack ${categoryGoals.length > 1 ? 'is-stacked' : ''}`;
+        stackElement.className = 'category-stack';
 
         stackElement.innerHTML = `
             <div class="stack-title">
@@ -184,24 +184,26 @@ const renderGoals = () => {
                 <span class="stack-count">${categoryGoals.length}</span>
             </div>
             <div class="stack-content">
-                ${categoryGoals.map(goal => `
-                    <div class="goal-card-wrapper">
-                        <div class="goal-card" onclick="toggleStack(this)">
+                ${categoryGoals.map((goal, idx) => `
+                    <div class="goal-card-wrapper" data-goal-id="${goal.id}" style="z-index: ${10 - idx}; transform: translateY(${idx * 55}px)">
+                        <div class="goal-card" onclick="focusGoal(this)">
                             <div class="goal-header">
                                 <h4>${goal.title}</h4>
                                 <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${goal.deadline}</span>
                             </div>
-                            <div class="progress-mini-bar">
-                                <div class="progress-fill" style="width: ${goal.progress}%"></div>
-                            </div>
-                            <div class="task-mini-list">
-                                ${goal.tasks.slice(0, 3).map(task => `
-                                    <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
-                                        <div class="mini-checkbox"></div>
-                                        <span class="mini-task-text">${task.text}</span>
-                                    </div>
-                                `).join('')}
-                                ${goal.tasks.length > 3 ? `<p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">+ 他 ${goal.tasks.length - 3} 件</p>` : ''}
+                            <!-- Expandable Content -->
+                            <div class="card-content-expand">
+                                <div class="progress-mini-bar">
+                                    <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                                </div>
+                                <div class="task-mini-list">
+                                    ${goal.tasks.map(task => `
+                                        <div class="task-mini-item ${task.done ? 'done' : ''}" onclick="event.stopPropagation(); toggleTask(${goal.id}, ${task.id})">
+                                            <div class="mini-checkbox"></div>
+                                            <span class="mini-task-text">${task.text}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -212,22 +214,30 @@ const renderGoals = () => {
     });
 };
 
-const toggleStack = (cardEl) => {
+const focusGoal = (cardEl) => {
+    const wrapper = cardEl.closest('.goal-card-wrapper');
     const stack = cardEl.closest('.category-stack');
-    if (stack.classList.contains('is-stacked')) {
-        const isExpanded = stack.classList.contains('is-expanded');
+    const allWrappers = stack.querySelectorAll('.goal-card-wrapper');
+    const isFocused = wrapper.classList.contains('is-focused');
 
-        if (!isExpanded) {
-            stack.classList.add('is-expanded');
-            gsap.from(stack.querySelectorAll('.goal-card-wrapper'), {
-                y: -10,
-                opacity: 0,
-                stagger: 0.1,
-                duration: 0.4,
-                ease: 'power2.out'
-            });
-        } else {
-            stack.classList.remove('is-expanded');
-        }
+    if (isFocused) {
+        // Unfocus: Return to neutral index state
+        allWrappers.forEach((tr, i) => {
+            tr.classList.remove('is-focused', 'is-blurred');
+            gsap.to(tr, { y: i * 55, opacity: 1, scale: 1, duration: 0.5, ease: 'expo.out' });
+        });
+    } else {
+        // Focus: Slide up and blur others
+        allWrappers.forEach((tr) => {
+            if (tr === wrapper) {
+                tr.classList.add('is-focused');
+                tr.classList.remove('is-blurred');
+                gsap.to(tr, { y: -20, scale: 1.02, duration: 0.6, ease: 'expo.out' });
+            } else {
+                tr.classList.add('is-blurred');
+                tr.classList.remove('is-focused');
+                gsap.to(tr, { y: 150, scale: 0.95, opacity: 0.3, duration: 0.5, ease: 'expo.out' });
+            }
+        });
     }
 };
