@@ -185,13 +185,13 @@ const renderGoals = () => {
             </div>
             <div class="stack-content">
                 ${categoryGoals.map((goal, idx) => `
-                    <div class="goal-card-wrapper" data-goal-id="${goal.id}" style="z-index: ${20 - idx}; transform: translateY(${idx * 80}px)">
+                    <div class="goal-card-wrapper" data-goal-id="${goal.id}" style="z-index: ${20 - idx}; transform: translateY(${idx * 12}px)">
                         <div class="goal-card" onclick="toggleCategoryStack(this)">
                             <div class="goal-header">
                                 <h4>${goal.title}</h4>
                                 <span class="deadline-tag ${goal.deadline.includes('今日') ? 'deadline-urgent' : ''}">${goal.deadline}</span>
                             </div>
-                            <!-- Details appear when stack expands -->
+                            <!-- Card Details (Auto-shown when stack is expanded via CSS) -->
                             <div class="card-content-expand">
                                 <div class="progress-mini-bar">
                                     <div class="progress-fill" style="width: ${goal.progress}%"></div>
@@ -220,16 +220,17 @@ const toggleCategoryStack = (cardEl) => {
     const wrappers = stack.querySelectorAll('.goal-card-wrapper');
 
     if (isExpanded) {
+        // Collapse to card stack (12px offset)
         stack.classList.remove('is-expanded');
         wrappers.forEach((tr, i) => {
-            gsap.to(tr, { y: i * 80, duration: 0.6, ease: 'expo.out' });
+            gsap.to(tr, { y: i * 12, duration: 0.6, ease: 'expo.out' });
         });
     } else {
+        // Expand to vertical list
         stack.classList.add('is-expanded');
-        gsap.to(wrappers, {
-            y: 0,
-            duration: 0.6,
-            ease: 'expo.out'
-        });
+        gsap.fromTo(wrappers,
+            { y: (i) => i * 12 },
+            { y: 0, duration: 0.6, ease: 'expo.out' }
+        );
     }
 };

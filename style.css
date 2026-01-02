@@ -142,17 +142,16 @@ body {
     height: 60px;
 }
 
-/* Stack View: Refined Accordion Style */
+/* Stack View: Refined Card Stack */
 #goals-container {
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    gap: 5rem;
 }
 
 .category-stack {
     position: relative;
     width: 100%;
-    min-height: 250px;
 }
 
 .category-header {
@@ -161,7 +160,7 @@ body {
     align-items: center;
     padding: 0 0.5rem 1rem 0.5rem;
     border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .category-label {
@@ -194,6 +193,8 @@ body {
 
 .stack-content {
     position: relative;
+    min-height: 120px;
+    transition: min-height 0.4s ease;
 }
 
 .goal-card-wrapper {
@@ -204,32 +205,40 @@ body {
     left: 0;
 }
 
-/* Index positioning: offset each card (Increased to 80px to avoid text overlap) */
-.category-stack .goal-card-wrapper:nth-child(1) {
-    transform: translateY(0px);
+/* Card Stack Offsets: Small offsets for depth */
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(1) {
+    transform: translateY(0px) scale(1);
     z-index: 10;
+    opacity: 1;
 }
 
-.category-stack .goal-card-wrapper:nth-child(2) {
-    transform: translateY(80px);
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(2) {
+    transform: translateY(12px) scale(0.98);
     z-index: 9;
+    opacity: 0.6;
 }
 
-.category-stack .goal-card-wrapper:nth-child(3) {
-    transform: translateY(160px);
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(3) {
+    transform: translateY(24px) scale(0.96);
     z-index: 8;
+    opacity: 0.3;
 }
 
-.category-stack .goal-card-wrapper:nth-child(n+4) {
-    transform: translateY(240px);
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+4) {
+    transform: translateY(30px) scale(0.94);
     z-index: 7;
     opacity: 0;
     pointer-events: none;
 }
 
-/* Expanded state within the stack */
-.category-stack.is-expanded {
-    padding-bottom: 100px;
+/* Hide info on background cards to avoid text overlap (noise) */
+.category-stack:not(.is-expanded) .goal-card-wrapper:nth-child(n+2) .goal-card>* {
+    opacity: 0 !important;
+}
+
+/* Expanded state: Layout as a clear list */
+.category-stack.is-expanded .stack-content {
+    min-height: auto;
 }
 
 .category-stack.is-expanded .goal-card-wrapper {
@@ -238,18 +247,24 @@ body {
     margin-bottom: 1.5rem;
     opacity: 1 !important;
     pointer-events: auto !important;
+    z-index: 1 !important;
 }
 
-/* Single Goal Card Internal Layout */
+.category-stack.is-expanded .goal-card-wrapper .goal-card>* {
+    opacity: 1 !important;
+}
+
+/* Single Goal Card */
 .goal-card {
     background: var(--bg-card);
     backdrop-filter: blur(30px);
     border: 1px solid var(--glass-border);
     border-radius: 24px;
-    padding: 1.5rem 2rem;
+    padding: 1.5rem 2.5rem;
     box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    transition: all 0.3s;
+    overflow: hidden;
+    transition: background 0.3s, border-color 0.3s;
 }
 
 .goal-card:hover {
